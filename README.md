@@ -118,7 +118,7 @@ maskEmail('ekaone3033@gmail.com', {
 
 maskEmail('admin@mail.company.com', {
   visibleChars: 1,
-  maskChar: '•',
+  maskChar: '*',
   maskDomain: true
 });
 // Output: 'a****@m***.c******.com'
