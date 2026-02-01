@@ -1,0 +1,65 @@
+{
+  "name": "@ekaone/mask-email",
+  "version": "1.0.0",
+  "description": "A lightweight, zero-dependency TypeScript library for masking email addresses",
+  "keywords": [
+    "email",
+    "mask",
+    "obfuscate",
+    "typescript",
+    "library",
+    "privacy",
+    "security",
+    "email-masking",
+    "data-protection"
+  ],
+  "author": {
+		"name": "Eka Prasetia",
+		"email": "ekaone3033@gmail.com",
+		"url": "https://prasetia.me"
+	},
+  "license": "MIT",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "clean": "rimraf dist",
+    "prepublishOnly": "npm run clean && npm run build && npm test",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest run --coverage"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ekaone/mask-email"
+  },
+  "bugs": {
+    "url": "https://github.com/ekaone/mask-email/issues"
+  },
+  "homepage": "https://github.com/ekaone/mask-email#readme",
+  "devDependencies": {
+    "@types/node": "^25.1.0",
+    "@vitest/coverage-v8": "^4.0.18",
+    "@vitest/ui": "^4.0.18",
+    "rimraf": "^6.0.0",
+    "tsup": "^8.5.1",
+    "typescript": "^5.7.0",
+    "vitest": "^4.0.18"
+  }
+}
