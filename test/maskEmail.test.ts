@@ -88,10 +88,10 @@ describe("maskEmail - Combined Options", () => {
   it("should handle all options", () => {
     const result = maskEmail("admin@mail.company.com", {
       visibleChars: 1,
-      maskChar: "•",
+      maskChar: "*",
       maskDomain: true,
     });
-    expect(result).toBe("a••••@m•••.c••••••.com");
+    expect(result).toBe("a****@m***.c******.com");
   });
 });
 
