@@ -1,4 +1,4 @@
-import { EmailOptions } from "./types";
+import type { EmailOptions } from "./types";
 
 /**
  * Masks an email address.
@@ -55,3 +55,5 @@ export const maskEmail = (
 
   return `${maskedUsername}@${finalDomain}`;
 };
+
+export type { EmailOptions } from "./types";
