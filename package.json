@@ -1,6 +1,6 @@
 {
   "name": "@ekaone/mask-email",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A lightweight, zero-dependency TypeScript library for masking email addresses",
   "keywords": [
     "email",
@@ -14,10 +14,10 @@
     "data-protection"
   ],
   "author": {
-		"name": "Eka Prasetia",
-		"email": "ekaone3033@gmail.com",
-		"url": "https://prasetia.me"
-	},
+    "name": "Eka Prasetia",
+    "email": "ekaone3033@gmail.com",
+    "url": "https://prasetia.me"
+  },
   "license": "MIT",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
