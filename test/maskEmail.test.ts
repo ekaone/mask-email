@@ -43,6 +43,11 @@ describe("maskEmail - Custom Options", () => {
     const result = maskEmail("user@example.com", { maskChar: "-" });
     expect(result).toBe("us--@example.com");
   });
+
+  it("should fallback to default mask character when maskChar is empty", () => {
+    const result = maskEmail("user@example.com", { maskChar: "" });
+    expect(result).toBe("us**@example.com");
+  });
 });
 
 describe("maskEmail - Domain Masking", () => {
@@ -144,6 +149,16 @@ describe("maskEmail - Edge Cases", () => {
   it("should handle zero visibleChars", () => {
     const result = maskEmail("test@example.com", { visibleChars: 0 });
     expect(result).toBe("****@example.com");
+  });
+
+  it("should clamp negative visibleChars to zero", () => {
+    const result = maskEmail("test@example.com", { visibleChars: -1 });
+    expect(result).toBe("****@example.com");
+  });
+
+  it("should floor decimal visibleChars", () => {
+    const result = maskEmail("test@example.com", { visibleChars: 1.9 });
+    expect(result).toBe("t***@example.com");
   });
 });
 

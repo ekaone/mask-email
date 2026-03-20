@@ -1,5 +1,10 @@
 # @ekaone/mask-email
 
+<div align="center">
+  <img src="https://res.cloudinary.com/ddjsyskef/image/upload/v1773999560/Github/k6uviiwrno6o352bp91j.png" alt="@ekaone/mask-email" />
+</div>
+
+
 A lightweight, zero-dependency TypeScript library for masking email addresses to protect user privacy.
 
 [![npm version](https://img.shields.io/npm/v/@ekaone/mask-email.svg)](https://www.npmjs.com/package/@ekaone/mask-email)

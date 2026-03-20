@@ -29,11 +29,19 @@ export const maskEmail = (
   const domain = email.slice(atIndex + 1);
 
   // Handle very short usernames
-  const actualVisibleChars = Math.min(visibleChars, username.length);
+  const actualVisibleChars = Math.min(
+    Math.max(
+      0,
+      Number.isFinite(visibleChars) ? Math.floor(visibleChars) : 0,
+    ),
+    username.length,
+  );
+  const finalMaskChar =
+    typeof maskChar === "string" && maskChar.length > 0 ? maskChar : "*";
   const visiblePart = username.slice(0, actualVisibleChars);
   const maskedUsername =
     visiblePart +
-    maskChar.repeat(Math.max(0, username.length - actualVisibleChars));
+    finalMaskChar.repeat(Math.max(0, username.length - actualVisibleChars));
 
   // Enhanced domain masking for subdomains
   let finalDomain = domain;
@@ -45,7 +53,7 @@ export const maskEmail = (
         .slice(0, -1)
         .map(
           (part) =>
-            part.charAt(0) + maskChar.repeat(Math.max(0, part.length - 1)),
+            part.charAt(0) + finalMaskChar.repeat(Math.max(0, part.length - 1)),
         );
       finalDomain = [...maskedParts, domainParts[domainParts.length - 1]].join(
         ".",
