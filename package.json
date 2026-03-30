@@ -36,10 +36,11 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsup",
+    "build": "pnpm clean && tsup",
     "dev": "tsup --watch",
     "clean": "rimraf dist",
-    "prepublishOnly": "npm run clean && npm run build && npm test",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "pnpm clean && pnpm test && pnpm build",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:ui": "vitest --ui",

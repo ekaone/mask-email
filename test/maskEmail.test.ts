@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { maskEmail } from "../src/index";
+import { maskEmail } from "../src/maskEmail";
 
 describe("maskEmail - Basic Functionality", () => {
   it("should mask email with default options", () => {

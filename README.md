@@ -36,10 +36,14 @@ pnpm add @ekaone/mask-email
 ## Quick Start
 
 ```typescript
-import { maskEmail } from '@ekaone/mask-email';
+import { maskEmail, maskEmails } from '@ekaone/mask-email';
 
 maskEmail('ekaone3033@gmail.com');
 // Output: 'ek********@gmail.com'
+
+// Batch masking
+maskEmails(['john@example.com', 'jane@company.com']);
+// Output: ['jo**@example.com', 'ja**@company.com']
 ```
 
 ## Usage Examples
@@ -100,6 +104,32 @@ maskEmail('contact@mail.google.com', { maskDomain: true });
 // Output: 'co*****@m***.g*****.com'
 ```
 
+### Batch Masking
+
+Process multiple emails at once with the same options:
+
+```typescript
+import { maskEmails } from '@ekaone/mask-email';
+
+// Basic batch masking
+const emails = [
+  'john.doe@example.com',
+  'jane.smith@company.com',
+  'admin@site.org'
+];
+
+maskEmails(emails);
+// Output: ['jo******@example.com', 'ja********@company.com', 'ad***@site.org']
+
+// Batch with custom options
+maskEmails(emails, { visibleChars: 3, maskChar: '#' });
+// Output: ['joh#####@example.com', 'jan#######@company.com', 'adm##@site.org']
+
+// Batch with domain masking
+maskEmails(emails, { maskDomain: true });
+// Output: ['jo******@ex******.com', 'ja********@co******.com', 'ad***@si**.org']
+```
+
 ### Viewable Mode
 
 Return the original email without masking (useful for admin views):
@@ -130,6 +160,27 @@ maskEmail('admin@mail.company.com', {
 ```
 
 ## API Reference
+
+### `maskEmails(emails, options?)`
+
+Masks an array of email addresses with the same options applied to each email.
+
+#### Parameters
+
+- **emails** (`string[]`) - Array of email addresses to mask
+- **options** (`EmailOptions`, optional) - Configuration options (same as `maskEmail`)
+
+#### Returns
+
+- (`string[]`) - Array of masked email addresses
+
+#### Example
+
+```typescript
+const emails = ['user1@test.com', 'user2@demo.com'];
+maskEmails(emails, { visibleChars: 1 });
+// Output: ['u***@test.com', 'u***@demo.com']
+```
 
 ### `maskEmail(email, options?)`
 
