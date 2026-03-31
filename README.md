@@ -5,7 +5,7 @@
 </div>
 
 
-A lightweight, zero-dependency TypeScript library for masking email addresses to protect user privacy.
+A lightweight, zero-dependency TypeScript library for masking email addresses.
 
 [![npm version](https://img.shields.io/npm/v/@ekaone/mask-email.svg)](https://www.npmjs.com/package/@ekaone/mask-email)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
