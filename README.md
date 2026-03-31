@@ -36,7 +36,7 @@ pnpm add @ekaone/mask-email
 ## Quick Start
 
 ```typescript
-import { maskEmail, maskEmailBatch } from '@ekaone/mask-email';
+import { maskEmail, maskEmailBatch, validateEmail, isValidEmail, anonymizeEmail, anonymizeEmailBatch } from '@ekaone/mask-email';
 
 maskEmail('ekaone3033@gmail.com');
 // Output: 'ek********@gmail.com'
@@ -159,6 +159,82 @@ maskEmail('admin@mail.company.com', {
 // Output: 'a****@m***.c******.com'
 ```
 
+### Email Anonymization
+
+Replace the username with a random identifier for complete privacy:
+
+```typescript
+import { anonymizeEmail, anonymizeEmailBatch } from '@ekaone/mask-email';
+
+// Basic anonymization
+anonymizeEmail('john.doe@company.com');
+// Output: 'user_a1b2c3@*****.com'
+
+// Custom prefix and ID length
+anonymizeEmail('admin@example.com', { prefix: 'anon', idLength: 8 });
+// Output: 'anon_x7y2k9m4@*******.com'
+
+// Keep domain visible
+anonymizeEmail('user@mail.google.com', { maskDomain: false });
+// Output: 'user_h3j5k2@mail.google.com'
+
+// Batch anonymization
+const emails = ['user1@test.com', 'user2@test.com'];
+anonymizeEmailBatch(emails);
+// Output: ['user_a1b2c3@****.com', 'user_x7y8z9@****.com']
+```
+
+### Batch Email Masking
+
+Process multiple emails with the same options:
+
+```typescript
+import { maskEmailBatch } from '@ekaone/mask-email';
+
+const emails = [
+  'john.doe@example.com',
+  'jane.smith@company.com',
+  'admin@site.org'
+];
+
+// Basic batch masking
+maskEmailBatch(emails);
+// Output: ['jo******@example.com', 'ja********@company.com', 'ad***@site.org']
+
+// Batch with custom options
+maskEmailBatch(emails, { visibleChars: 3, maskChar: '#' });
+// Output: ['joh#####@example.com', 'jan#######@company.com', 'adm##@site.org']
+
+// Batch with domain masking
+maskEmailBatch(emails, { maskDomain: true });
+// Output: ['jo******@ex******.com', 'ja********@co******.com', 'ad***@si**.org']
+```
+
+### Email Validation
+
+Validate email format and optionally mask valid emails:
+
+```typescript
+import { validateEmail, isValidEmail } from '@ekaone/mask-email';
+
+// Validate and get masked email
+const result = validateEmail('test@example.com');
+// Returns: { valid: true, original: 'test@example.com', masked: 'te**@example.com' }
+
+// Validation with custom masking options
+const custom = validateEmail('user@test.com', { visibleChars: 3 });
+// Returns: { valid: true, original: 'user@test.com', masked: 'use*@test.com' }
+
+// Invalid email
+const invalid = validateEmail('invalid-email');
+// Returns: { valid: false, original: 'invalid-email', masked: null, error: 'Invalid email format' }
+
+// Quick boolean check
+isValidEmail('test@example.com'); // true
+isValidEmail('invalid'); // false
+isValidEmail(''); // false
+```
+
 ## API Reference
 
 ### `maskEmailBatch(emails, options?)`
@@ -196,9 +272,11 @@ Masks an email address according to the provided options.
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
 | `maskChar` | `string` | `'*'` | Character used for masking |
-| `visibleChars` | `number` | `2` | Number of characters to remain visible at the beginning |
-| `maskDomain` | `boolean` | `false` | If true, the domain part (after @) will also be masked |
-| `viewable` | `boolean` | `false` | If true, returns the original email without masking |
+| `visibleChars` | `number` | `2` | Number of characters visible at the beginning |
+| `visibleCharsEnd` | `number` | `0` | Number of characters visible at the end |
+| `maskPercentage` | `number` | - | Mask based on percentage (0-100), takes precedence over visibleChars |
+| `maskDomain` | `boolean \| 'full'` | `false` | Mask domain: `true`/'partial' masks parts keeping TLD, `'full'` masks entire domain |
+| `viewable` | `boolean` | `false` | Return original email without masking |
 
 #### Returns
 
@@ -210,13 +288,143 @@ Masks an email address according to the provided options.
 interface EmailOptions {
   /** Character used for masking (default: '*') */
   maskChar?: string;
-  /** Number of characters to remain visible at the beginning (default: 2) */
+  /** Number of characters visible at the beginning (default: 2) */
   visibleChars?: number;
-  /** If true, returns the original email without masking (default: false) */
+  /** Number of characters visible at the end (default: 0) */
+  visibleCharsEnd?: number;
+  /** Mask based on percentage (0-100), takes precedence over visibleChars */
+  maskPercentage?: number;
+  /** Return original email without masking (default: false) */
   viewable?: boolean;
-  /** If true, the domain part (after @) will also be masked (default: false) */
+  /** Mask domain: true/partial keeps TLD visible, 'full' masks entire domain (default: false) */
+  maskDomain?: boolean | 'full';
+}
+```
+
+### `validateEmail(email, options?)`
+
+Validates an email address and returns a result object with validation status and optional masked email.
+
+#### Parameters
+
+- **email** (`string`) - The email address to validate
+- **options** (`EmailOptions`, optional) - Masking options applied if email is valid
+
+#### Returns
+
+- (`EmailValidationResult`) - Object containing:
+  - `valid` (`boolean`) - Whether the email format is valid
+  - `original` (`string`) - The original email address
+  - `masked` (`string | null`) - Masked email if valid, null if invalid
+  - `error` (`string`, optional) - Error message if validation failed
+
+#### Example
+
+```typescript
+const result = validateEmail('test@example.com');
+// Returns: { valid: true, original: 'test@example.com', masked: 'te**@example.com' }
+
+const invalid = validateEmail('invalid-email');
+// Returns: { valid: false, original: 'invalid-email', masked: null, error: 'Invalid email format' }
+```
+
+#### TypeScript Types
+
+```typescript
+interface EmailValidationResult {
+  valid: boolean;
+  original: string;
+  masked: string | null;
+  error?: string;
+}
+```
+
+### `isValidEmail(email)`
+
+Quick boolean validation without masking. Returns `true` if the email is valid, `false` otherwise.
+
+#### Parameters
+
+- **email** (`string`) - The email address to validate
+
+#### Returns
+
+- (`boolean`) - `true` if valid, `false` otherwise
+
+#### Example
+
+```typescript
+isValidEmail('test@example.com'); // true
+isValidEmail('invalid'); // false
+isValidEmail(''); // false
+```
+
+### `anonymizeEmail(email, options?)`
+
+Anonymizes an email by replacing the username with a random identifier. Useful for complete privacy protection.
+
+#### Parameters
+
+- **email** (`string`) - The email address to anonymize
+- **options** (`AnonymizeOptions`, optional) - Anonymization options
+
+#### Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `prefix` | `string` | `'user'` | Prefix for the anonymous identifier |
+| `idLength` | `number` | `6` | Length of the random identifier |
+| `maskDomain` | `boolean` | `true` | Whether to mask the domain part |
+
+#### Returns
+
+- (`string`) - Anonymized email address
+
+#### Example
+
+```typescript
+anonymizeEmail('john.doe@company.com');
+// Output: 'user_a1b2c3@*****.com'
+
+anonymizeEmail('admin@example.com', { prefix: 'anon', idLength: 8 });
+// Output: 'anon_x7y2k9m4@*******.com'
+
+anonymizeEmail('user@mail.google.com', { maskDomain: false });
+// Output: 'user_h3j5k2@mail.google.com'
+```
+
+#### TypeScript Types
+
+```typescript
+interface AnonymizeOptions {
+  prefix?: string;
+  idLength?: number;
   maskDomain?: boolean;
 }
+```
+
+### `anonymizeEmailBatch(emails, options?)`
+
+Batch anonymize multiple email addresses with the same options.
+
+#### Parameters
+
+- **emails** (`string[]`) - Array of email addresses to anonymize
+- **options** (`AnonymizeOptions`, optional) - Anonymization options applied to all emails
+
+#### Returns
+
+- (`string[]`) - Array of anonymized email addresses
+
+#### Example
+
+```typescript
+const emails = ['user1@test.com', 'user2@test.com'];
+anonymizeEmailBatch(emails);
+// Output: ['user_a1b2c3@****.com', 'user_x7y8z9@****.com']
+
+anonymizeEmailBatch(emails, { prefix: 'anon' });
+// Output: ['anon_k3m9p2@****.com', 'anon_q5n8r4@****.com']
 ```
 
 ## Real-World Use Cases
