@@ -1,6 +1,6 @@
 {
   "name": "@ekaone/mask-email",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "A lightweight, zero-dependency TypeScript library for masking email addresses",
   "keywords": [
     "email",
@@ -9,6 +9,9 @@
     "typescript",
     "library",
     "privacy",
+    "anonymization",
+    "validation",
+    "batch-email",
     "security",
     "email-masking",
     "data-protection"
@@ -36,10 +39,11 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsup",
+    "build": "pnpm clean && tsup",
     "dev": "tsup --watch",
     "clean": "rimraf dist",
-    "prepublishOnly": "npm run clean && npm run build && npm test",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "pnpm clean && pnpm test && pnpm build",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:ui": "vitest --ui",

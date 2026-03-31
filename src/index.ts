@@ -1,67 +1,25 @@
-import type { EmailOptions } from "./types";
-
 /**
- * Masks an email address.
- * Example: 'ekaone3033@gmail.com' -> 'ek****@gmail.com'
- * @param email - The email string to be masked
- * @param options - Configuration options for masking
- * @returns The masked email string
+ * @file index.ts
+ * @description Core entry point for @ekaone/mail-mask.
+ * @author Eka Prasetia
+ * @website https://prasetia.me
+ * @license MIT
  */
-export const maskEmail = (
-  email: string,
-  options: EmailOptions = {},
-): string => {
-  const {
-    maskChar = "*",
-    visibleChars = 2,
-    maskDomain = false,
-    viewable = false,
-  } = options;
 
-  // Input validation
-  if (!email || typeof email !== "string") return email;
-  if (viewable) return email;
+export { maskEmail } from "./maskEmail";
+export { maskEmailBatch } from "./maskEmailBatch";
 
-  const atIndex = email.lastIndexOf("@"); // Handle multiple @ symbols
-  if (atIndex === -1) return email;
+// Validation functions
+export { validateEmail, isValidEmail } from "./validateEmail";
 
-  const username = email.slice(0, atIndex);
-  const domain = email.slice(atIndex + 1);
+// Anonymization functions
+export { anonymizeEmail, anonymizeEmailBatch } from "./anonymizeEmail";
 
-  // Handle very short usernames
-  const actualVisibleChars = Math.min(
-    Math.max(
-      0,
-      Number.isFinite(visibleChars) ? Math.floor(visibleChars) : 0,
-    ),
-    username.length,
-  );
-  const finalMaskChar =
-    typeof maskChar === "string" && maskChar.length > 0 ? maskChar : "*";
-  const visiblePart = username.slice(0, actualVisibleChars);
-  const maskedUsername =
-    visiblePart +
-    finalMaskChar.repeat(Math.max(0, username.length - actualVisibleChars));
-
-  // Enhanced domain masking for subdomains
-  let finalDomain = domain;
-  if (maskDomain) {
-    const domainParts = domain.split(".");
-    if (domainParts.length >= 2) {
-      // Mask all parts except the TLD (last part)
-      const maskedParts = domainParts
-        .slice(0, -1)
-        .map(
-          (part) =>
-            part.charAt(0) + finalMaskChar.repeat(Math.max(0, part.length - 1)),
-        );
-      finalDomain = [...maskedParts, domainParts[domainParts.length - 1]].join(
-        ".",
-      );
-    }
-  }
-
-  return `${maskedUsername}@${finalDomain}`;
-};
-
-export type { EmailOptions } from "./types";
+// Type exports
+export type {
+  MaskOptions,
+  EmailOptions,
+  DomainMaskMode,
+  EmailValidationResult,
+  AnonymizeOptions,
+} from "./types";
