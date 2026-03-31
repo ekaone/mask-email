@@ -36,13 +36,13 @@ pnpm add @ekaone/mask-email
 ## Quick Start
 
 ```typescript
-import { maskEmail, maskEmails } from '@ekaone/mask-email';
+import { maskEmail, maskEmailBatch } from '@ekaone/mask-email';
 
 maskEmail('ekaone3033@gmail.com');
 // Output: 'ek********@gmail.com'
 
 // Batch masking
-maskEmails(['john@example.com', 'jane@company.com']);
+maskEmailBatch(['john@example.com', 'jane@company.com']);
 // Output: ['jo**@example.com', 'ja**@company.com']
 ```
 
@@ -109,7 +109,7 @@ maskEmail('contact@mail.google.com', { maskDomain: true });
 Process multiple emails at once with the same options:
 
 ```typescript
-import { maskEmails } from '@ekaone/mask-email';
+import { maskEmailBatch } from '@ekaone/mask-email';
 
 // Basic batch masking
 const emails = [
@@ -118,15 +118,15 @@ const emails = [
   'admin@site.org'
 ];
 
-maskEmails(emails);
+maskEmailBatch(emails);
 // Output: ['jo******@example.com', 'ja********@company.com', 'ad***@site.org']
 
 // Batch with custom options
-maskEmails(emails, { visibleChars: 3, maskChar: '#' });
+maskEmailBatch(emails, { visibleChars: 3, maskChar: '#' });
 // Output: ['joh#####@example.com', 'jan#######@company.com', 'adm##@site.org']
 
 // Batch with domain masking
-maskEmails(emails, { maskDomain: true });
+maskEmailBatch(emails, { maskDomain: true });
 // Output: ['jo******@ex******.com', 'ja********@co******.com', 'ad***@si**.org']
 ```
 
@@ -161,7 +161,7 @@ maskEmail('admin@mail.company.com', {
 
 ## API Reference
 
-### `maskEmails(emails, options?)`
+### `maskEmailBatch(emails, options?)`
 
 Masks an array of email addresses with the same options applied to each email.
 
@@ -178,7 +178,7 @@ Masks an array of email addresses with the same options applied to each email.
 
 ```typescript
 const emails = ['user1@test.com', 'user2@demo.com'];
-maskEmails(emails, { visibleChars: 1 });
+maskEmailBatch(emails, { visibleChars: 1 });
 // Output: ['u***@test.com', 'u***@demo.com']
 ```
 

@@ -7,5 +7,19 @@
  */
 
 export { maskEmail } from "./maskEmail";
-export { maskEmails } from "./maskEmails";
-export type { EmailOptions } from "./types";
+export { maskEmailBatch } from "./maskEmailBatch";
+
+// Validation functions
+export { validateEmail, isValidEmail } from "./validateEmail";
+
+// Anonymization functions
+export { anonymizeEmail, anonymizeEmailBatch } from "./anonymizeEmail";
+
+// Type exports
+export type {
+  MaskOptions,
+  EmailOptions,
+  DomainMaskMode,
+  EmailValidationResult,
+  AnonymizeOptions,
+} from "./types";
