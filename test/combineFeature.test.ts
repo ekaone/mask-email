@@ -130,24 +130,28 @@ describe("Feature 3: Email Validation", () => {
   });
 });
 
-describe("Feature 4: Percentage-Based Masking", () => {
-  it("should mask 50% of username", () => {
+describe("Feature 4: Percentage-Based Masking (Balanced)", () => {
+  it("should mask 50% of username (balanced)", () => {
     const result = maskEmail("username@test.com", { maskPercentage: 50 });
-    expect(result).toBe("user****@test.com");
+    // 8 chars, show 4 (50%): ceil(4/2)=2 start, floor(4/2)=2 end
+    expect(result).toBe("us****me@test.com");
   });
 
-  it("should mask 20% of username", () => {
+  it("should mask 20% of username (balanced)", () => {
     const result = maskEmail("username@test.com", { maskPercentage: 20 });
-    expect(result).toBe("userna**@test.com");
+    // 8 chars, show 6 (80%): ceil(6/2)=3 start, floor(6/2)=3 end
+    expect(result).toBe("use**ame@test.com");
   });
 
-  it("should mask 70% of username", () => {
+  it("should mask 70% of username (balanced)", () => {
     const result = maskEmail("ekaone3033@gmail.com", { maskPercentage: 70 });
-    expect(result).toBe("eka*******@gmail.com");
+    // 10 chars, show 3 (30%): ceil(3/2)=2 start, floor(3/2)=1 end
+    expect(result).toBe("ek*******3@gmail.com");
   });
 
-  it("should mask 90% of username", () => {
+  it("should mask 90% of username (balanced)", () => {
     const result = maskEmail("johndoe@example.com", { maskPercentage: 90 });
+    // 7 chars, show 1 (10%): ceil(1/2)=1 start, floor(1/2)=0 end
     expect(result).toBe("j******@example.com");
   });
 
@@ -166,16 +170,30 @@ describe("Feature 4: Percentage-Based Masking", () => {
       maskPercentage: 50,
       maskDomain: true,
     });
-    expect(result).toBe("us**@g****.com");
+    // 4 chars, show 2 (50%): ceil(2/2)=1 start, floor(2/2)=1 end
+    expect(result).toBe("u**r@g****.com");
   });
 
-  it("maskPercentage should take precedence over visibleChars", () => {
+  it("maskPercentage should take precedence over visibleChars and visibleCharsEnd", () => {
     const result = maskEmail("username@test.com", {
       visibleChars: 5,
+      visibleCharsEnd: 3,
       maskPercentage: 50,
     });
-    // Should use percentage, not visibleChars
-    expect(result).toBe("user****@test.com");
+    // Should use percentage (balanced), ignore visibleChars/visibleCharsEnd
+    expect(result).toBe("us****me@test.com");
+  });
+
+  it("should handle 75% masking (odd visible chars)", () => {
+    const result = maskEmail("username@test.com", { maskPercentage: 75 });
+    // 8 chars, show 2 (25%): ceil(2/2)=1 start, floor(2/2)=1 end
+    expect(result).toBe("u******e@test.com");
+  });
+
+  it("should handle percentage on very short username", () => {
+    const result = maskEmail("ab@test.com", { maskPercentage: 50 });
+    // 2 chars, show 1 (50%): ceil(1/2)=1 start, floor(1/2)=0 end
+    expect(result).toBe("a*@test.com");
   });
 });
 
@@ -233,8 +251,8 @@ describe("maskEmailBatch - Batch Processing", () => {
   it("should handle batch with percentage masking", () => {
     const emails = ["test@test.com", "user@test.com"];
     const results = maskEmailBatch(emails, { maskPercentage: 50 });
-    expect(results[0]).toBe("te**@test.com");
-    expect(results[1]).toBe("us**@test.com");
+    expect(results[0]).toBe("t**t@test.com");
+    expect(results[1]).toBe("u**r@test.com");
   });
 });
 
@@ -253,7 +271,7 @@ describe("Combined Features", () => {
       maskPercentage: 60,
       maskDomain: true,
     });
-    expect(result).toBe("use*****@m***.g*****.com");
+    expect(result).toBe("us*****e@m***.g*****.com");
   });
 
   it("should validate and mask with all options", () => {

@@ -49,14 +49,18 @@ export const maskEmail = (
   // Percentage-based masking takes precedence
   if (maskPercentage !== undefined) {
     const percentage = Math.max(0, Math.min(100, maskPercentage));
-    // Calculate visible chars using standard rounding
     const charsToShow = Math.round(
       (username.length * (100 - percentage)) / 100,
     );
 
-    // Ensure at least 1 char visible when percentage < 100%
-    startVisible = percentage < 100 ? Math.max(1, charsToShow) : 0;
-    endVisible = 0;
+    if (percentage < 100) {
+      // Balance between start and end
+      startVisible = Math.ceil(charsToShow / 2);
+      endVisible = Math.floor(charsToShow / 2);
+    } else {
+      startVisible = 0;
+      endVisible = 0;
+    }
   }
 
   // Handle very short usernames
