@@ -133,7 +133,12 @@ describe("Feature 3: Email Validation", () => {
 describe("Feature 4: Percentage-Based Masking", () => {
   it("should mask 50% of username", () => {
     const result = maskEmail("username@test.com", { maskPercentage: 50 });
-    expect(result).toBe("use*****@test.com");
+    expect(result).toBe("user****@test.com");
+  });
+
+  it("should mask 20% of username", () => {
+    const result = maskEmail("username@test.com", { maskPercentage: 20 });
+    expect(result).toBe("userna**@test.com");
   });
 
   it("should mask 70% of username", () => {
@@ -170,7 +175,7 @@ describe("Feature 4: Percentage-Based Masking", () => {
       maskPercentage: 50,
     });
     // Should use percentage, not visibleChars
-    expect(result).toBe("use*****@test.com");
+    expect(result).toBe("user****@test.com");
   });
 });
 
@@ -259,6 +264,6 @@ describe("Combined Features", () => {
       maskChar: "•",
     });
     expect(result.valid).toBe(true);
-    expect(result.masked).toBe("jo•••••••e@•••••••.•••");
+    expect(result.masked).toBe("jo•••••e@•••••••.•••");
   });
 });

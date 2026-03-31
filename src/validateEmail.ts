@@ -31,10 +31,9 @@ export const validateEmail = (
     };
   }
 
-  // RFC 5322 simplified email regex
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-  if (!emailRegex.test(email)) {
+  // Check for basic structure before regex
+  const atIndex = email.indexOf("@");
+  if (atIndex === -1) {
     return {
       valid: false,
       original: email,
@@ -43,10 +42,10 @@ export const validateEmail = (
     };
   }
 
-  // Additional validation checks
-  const [username, domain] = email.split("@");
+  const username = email.slice(0, atIndex);
+  const domain = email.slice(atIndex + 1);
 
-  // Check for invalid characters
+  // Check for empty username
   if (username.length === 0) {
     return {
       valid: false,
@@ -56,12 +55,25 @@ export const validateEmail = (
     };
   }
 
+  // Check for empty domain or missing dot in domain
   if (domain.length === 0 || !domain.includes(".")) {
     return {
       valid: false,
       original: email,
       masked: null,
       error: "Invalid domain",
+    };
+  }
+
+  // RFC 5322 simplified email regex
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  if (!emailRegex.test(email)) {
+    return {
+      valid: false,
+      original: email,
+      masked: null,
+      error: "Invalid email format",
     };
   }
 
