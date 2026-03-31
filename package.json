@@ -9,6 +9,9 @@
     "typescript",
     "library",
     "privacy",
+    "anonymization",
+    "validation",
+    "batch-email",
     "security",
     "email-masking",
     "data-protection"
